@@ -32,7 +32,9 @@ function Get-KarmaForSubject($Subject) {
         $karmaState = @()
     }
     if ($karmaState.Count -ge 1 ) {
-        $subjectKarma = $KarmaState | Where-Object {$_.Name.ToUpper() -eq $Subject.ToUpper() }
+        $subjectKarma = $KarmaState |
+            Where-Object { $_.Name -ne '' -and $_.Name -ne $null } |
+            Where-Object {$_.Name.ToUpper() -eq $Subject.ToUpper() }
         if ($subjectKarma -eq $null) {
             $subjectKarma = [pscustomobject]@{
                 PSTypeName = 'Karma'
@@ -61,7 +63,9 @@ function Set-KarmaForSubject($Karma) {
     $Karma.LastUpdated = (Get-Date).ToString('u')
 
     if ($karmaState.Count -ge 1 ) {
-        $oldKarma = $KarmaState | Where-Object {$_.Name -eq $Karma.Name}
+        $oldKarma = $KarmaState |
+            Where-Object { $_.Name -ne '' -and $_.Name -ne $null } |
+            Where-Object {$_.Name -eq $Karma.Name}
         if ($oldKarma) {
             [int]$oldKarma.CurrentKarma = $Karma.CurrentKarma
         } else {
